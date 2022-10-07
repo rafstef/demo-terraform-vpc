@@ -102,6 +102,7 @@ pipeline {
                             sh "terraform apply -no-color -input=false ${TERRAFORM_PLAN_FILE}-${ENV_NAME}.plan"
                         } else{
                             echo "TF plan not approved. Skip Apply . . . "
+                        }
                     }
                 }
             }
