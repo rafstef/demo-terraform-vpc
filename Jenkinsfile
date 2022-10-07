@@ -97,7 +97,7 @@ pipeline {
                     sh "terraform init -no-color"
                     sh "terraform workspace select ${env.ENV_NAME} -no-color"
                     sh "terraform apply -no-color -input=false ${TERRAFORM_PLAN_FILE}-${ENV_NAME}.plan"
-                }else{
+                } else {
                     echo "TF plan not approved. Skip Apply . . . "
                 }
             }
