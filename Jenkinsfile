@@ -29,7 +29,7 @@ pipeline {
     }
 
     tools {
-        terraform 'terraform_1.0.6'
+        terraform 'terraform_1.3.2'
     }
 
     stages {
