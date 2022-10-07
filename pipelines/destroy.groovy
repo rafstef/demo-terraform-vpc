@@ -1,5 +1,15 @@
 #!/usr/bin/env groovy
-
+def askUserInput(String message,String multipleChoise,String defaultChoice,int time) {
+    def userInput = defaultChoice
+    try{
+        timeout(time: time, unit: 'SECONDS') {
+        userInput = input message: message, ok: 'OK', parameters: [choice(name: 'USERINPUT', choices: multipleChoise, defaultChoice: defaultChoice, description: message)] }
+    } catch (err) {
+        defaultChoice
+    }
+    echo "User select : ${userInput}"
+    userInput
+}
 
 def getEnvName(branchName) {
     if("origin/develop".equals(branchName)) {
