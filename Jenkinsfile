@@ -12,7 +12,7 @@ def askUserInput(String message,String multipleChoise,String defaultChoice,int t
     userInput
 }
 def getEnvName(branchName) {
-    if("origin/dev".equals(branchName)) {
+    if("origin/develop".equals(branchName)) {
         return "DEV";
     } else if ("origin/master".equals(branchName)) {
         return "PROD";
