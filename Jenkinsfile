@@ -91,14 +91,18 @@ pipeline {
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
-                    echo "${env.ENV_NAME.toLowerCase()}"
-                    echo 'Validating terraform scripts . . .'
-                    sh "terraform version"
-                    sh "terraform init -no-color"
-                    sh "terraform workspace select ${env.ENV_NAME} -no-color"
-                    sh "terraform apply -no-color -input=false ${TERRAFORM_PLAN_FILE}-${ENV_NAME}.plan"
-                } else {
-                    echo "TF plan not approved. Skip Apply . . . "
+                    script {
+                        approve_plan=askUserInput("Apply Terraform plan?","NO\nYES","NO",300)
+                        if( approve_plan == "YES"){
+                            echo "${env.ENV_NAME.toLowerCase()}"
+                            echo 'Validating terraform scripts . . .'
+                            sh "terraform version"
+                            sh "terraform init -no-color"
+                            sh "terraform workspace select ${env.ENV_NAME} -no-color"
+                            sh "terraform apply -no-color -input=false ${TERRAFORM_PLAN_FILE}-${ENV_NAME}.plan"
+                        } else{
+                            echo "TF plan not approved. Skip Apply . . . "
+                    }
                 }
             }
         }
