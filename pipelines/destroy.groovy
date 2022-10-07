@@ -83,7 +83,7 @@ pipeline {
                 }
             }
         }
-        stage('TF Apply') {
+        stage('TF Destroy') {
             steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
@@ -92,14 +92,14 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
                     script {
-                        approve_plan=askUserInput("Apply Terraform plan?","NO\nYES","NO",300)
+                        approve_plan=askUserInput("Destroy Terraform plan?","NO\nYES","NO",300)
                         if( approve_plan == "YES"){
                             echo "${env.ENV_NAME.toLowerCase()}"
                             echo 'Validating terraform scripts . . .'
                             sh "terraform version"
                             sh "terraform init -no-color"
                             sh "terraform workspace select ${env.ENV_NAME} -no-color"
-                            sh "terraform destroy -no-color -input=false ${TERRAFORM_PLAN_FILE}-${ENV_NAME}.plan"
+                            sh "terraform apply -destroy -no-color -input=false ${TERRAFORM_PLAN_FILE}-${ENV_NAME}.plan"
                         } else{
                             echo "TF plan not approved. Skip Apply . . . "
                         }
