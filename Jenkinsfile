@@ -12,7 +12,7 @@ def askUserInput(String message,String multipleChoise,String defaultChoice,int t
     userInput
 }
 def getEnvName(branchName) {
-    if("origin/dev".equals(branchName)) {
+    if("origin/develop".equals(branchName)) {
         return "DEV";
     } else if ("origin/master".equals(branchName)) {
         return "PROD";
@@ -29,7 +29,7 @@ pipeline {
     }
 
     tools {
-        terraform 'terraform_1.0.6'
+        terraform 'terraform_1.3.2'
     }
 
     stages {
@@ -70,7 +70,7 @@ pipeline {
             steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: "terraform-user",
+                    credentialsId: "aws-credentials	",
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
@@ -87,18 +87,23 @@ pipeline {
             steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: "terraform-user",
+                    credentialsId: "aws-credentials	",
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
-                    echo "${env.ENV_NAME.toLowerCase()}"
-                    echo 'Validating terraform scripts . . .'
-                    sh "terraform version"
-                    sh "terraform init -no-color"
-                    sh "terraform workspace select ${env.ENV_NAME} -no-color"
-                    sh "terraform apply -no-color -input=false ${TERRAFORM_PLAN_FILE}-${ENV_NAME}.plan"
-                }else{
-                    echo "TF plan not approved. Skip Apply . . . "
+                    script {
+                        approve_plan=askUserInput("Apply Terraform plan?","NO\nYES","NO",300)
+                        if( approve_plan == "YES"){
+                            echo "${env.ENV_NAME.toLowerCase()}"
+                            echo 'Validating terraform scripts . . .'
+                            sh "terraform version"
+                            sh "terraform init -no-color"
+                            sh "terraform workspace select ${env.ENV_NAME} -no-color"
+                            sh "terraform apply -no-color -input=false ${TERRAFORM_PLAN_FILE}-${ENV_NAME}.plan"
+                        } else{
+                            echo "TF plan not approved. Skip Apply . . . "
+                        }
+                    }
                 }
             }
         }
