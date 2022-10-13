@@ -5,7 +5,24 @@ locals {
         PREPROD = "preprod"
         PROD = "prod"
     }
-
+    resource_prefix = {
+        DEV ="microservicies-networking"
+        BUGFIXING = "microservicies-networking"
+        PREPROD = "microservicies-networking"
+        PROD = "microservicies-networking"
+    }
+    frontend_instance_count = {
+        DEV = "1"
+        BUGFIXING = "2"
+        PREPROD = "2"
+        PROD = "2"
+    }
+    backend_instance_count = {
+        DEV = "1"
+        BUGFIXING = "2"
+        PREPROD = "2"
+        PROD = "2"
+    }
     cidr = {
         DEV = "192.168.1.0/24"
         BUGFIXING = "192.168.2.0/24"
